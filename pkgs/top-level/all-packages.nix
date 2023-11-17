@@ -3935,6 +3935,11 @@ with pkgs;
 
   hakrawler = callPackage ../tools/security/hakrawler { };
 
+  handycon = callPackage ../tools/inputmethods/handycon {
+    inherit (python3Packages)
+      setuptools;
+  };
+
   harsh = callPackage ../applications/misc/harsh { };
 
   harvid = callPackage ../tools/video/harvid { };

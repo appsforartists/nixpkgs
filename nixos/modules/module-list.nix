@@ -520,6 +520,7 @@
   ./services/hardware/fancontrol.nix
   ./services/hardware/freefall.nix
   ./services/hardware/fwupd.nix
+  ./services/hardware/handycon.nix
   ./services/hardware/hddfancontrol.nix
   ./services/hardware/illum.nix
   ./services/hardware/interception-tools.nix
