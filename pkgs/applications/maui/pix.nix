@@ -1,5 +1,6 @@
 { lib
 , mkDerivation
+, stdenv
 , cmake
 , extra-cmake-modules
 , applet-window-buttons
@@ -14,6 +15,7 @@
 , qtmultimedia
 , qtquickcontrols2
 , qtlocation
+, qtwayland
 , exiv2
 , kquickimageedit
 }:
@@ -41,6 +43,8 @@ mkDerivation {
     qtlocation
     exiv2
     kquickimageedit
+  ] ++ lib.optionals stdenv.isLinux [
+    qtwayland
   ];
 
   meta = with lib; {
