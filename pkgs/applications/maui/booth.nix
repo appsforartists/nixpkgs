@@ -1,5 +1,6 @@
 { lib
 , mkDerivation
+, stdenv
 , cmake
 , extra-cmake-modules
 , kcoreaddons
@@ -11,6 +12,7 @@
 , qtgraphicaleffects
 , qtmultimedia
 , qtquickcontrols2
+, qtwayland
 , gst_all_1
 }:
 
@@ -32,6 +34,8 @@ mkDerivation {
     qtgraphicaleffects
     qtmultimedia
     qtquickcontrols2
+  ] ++ lib.optionals stdenv.isLinux [
+    qtwayland
   ] ++ (with gst_all_1; [
     gst-plugins-bad
     gst-plugins-base

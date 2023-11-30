@@ -1,5 +1,6 @@
 { lib
 , mkDerivation
+, stdenv
 , cmake
 , extra-cmake-modules
 , karchive
@@ -11,6 +12,7 @@
 , mauikit-filebrowsing
 , qtmultimedia
 , qtquickcontrols2
+, qtwayland
 }:
 
 mkDerivation {
@@ -36,6 +38,8 @@ mkDerivation {
     mauikit-filebrowsing
     qtmultimedia
     qtquickcontrols2
+  ] ++ lib.optionals stdenv.isLinux [
+    qtwayland
   ];
 
   meta = with lib; {
