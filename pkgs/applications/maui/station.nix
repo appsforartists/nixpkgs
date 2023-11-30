@@ -1,5 +1,6 @@
 { lib
 , mkDerivation
+, stdenv
 , cmake
 , extra-cmake-modules
 , kconfig
@@ -11,6 +12,7 @@
 , mauikit-terminal
 , qmltermwidget
 , qtmultimedia
+, qtwayland
 }:
 
 mkDerivation {
@@ -31,6 +33,8 @@ mkDerivation {
     mauikit-terminal
     qmltermwidget
     qtmultimedia
+  ] ++ lib.optionals stdenv.isLinux [
+    qtwayland
   ];
 
   meta = with lib; {

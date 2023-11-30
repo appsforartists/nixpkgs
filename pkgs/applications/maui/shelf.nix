@@ -1,5 +1,6 @@
 { lib
 , mkDerivation
+, stdenv
 , cmake
 , extra-cmake-modules
 , applet-window-buttons
@@ -14,6 +15,7 @@
 , mauikit-texteditor
 , qtmultimedia
 , qtquickcontrols2
+, qtwayland
 , poppler
 }:
 
@@ -39,6 +41,8 @@ mkDerivation {
     qtmultimedia
     qtquickcontrols2
     poppler
+  ] ++ lib.optionals stdenv.isLinux [
+    qtwayland
   ];
 
   meta = with lib; {

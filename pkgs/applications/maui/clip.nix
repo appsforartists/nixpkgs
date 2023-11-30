@@ -1,5 +1,6 @@
 { lib
 , mkDerivation
+, stdenv
 , cmake
 , extra-cmake-modules
 , applet-window-buttons
@@ -12,6 +13,7 @@
 , mauikit-filebrowsing
 , qtmultimedia
 , qtquickcontrols2
+, qtwayland
 , taglib
 , ffmpeg
 }:
@@ -37,6 +39,8 @@ mkDerivation {
     qtquickcontrols2
     taglib
     ffmpeg
+  ] ++ lib.optionals stdenv.isLinux [
+    qtwayland
   ];
 
   meta = with lib; {
