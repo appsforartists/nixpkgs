@@ -5,6 +5,7 @@
   "clock-override@gnomeshell.kryogenix.org" = callPackage ./clock-override { };
   "drop-down-terminal@gs-extensions.zzrough.org" = callPackage ./drop-down-terminal { };
   "EasyScreenCast@iacopodeenosee.gmail.com" = callPackage ./EasyScreenCast { };
+  "force-phone-mode@vixalien.com" = callPackage ./force-phone-mode { };
   "gsconnect@andyholmes.github.io" = callPackage ./gsconnect { };
   "icon-hider@kalnitsky.org" = callPackage ./icon-hider { };
   "impatience@gfxmonk.net" = callPackage ./impatience { };
