@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "gnome-shell-extension-force-phone-mode";
-  version = "0-unstable-2023-10-28";
+  version = "0-unstable-2024-11-16";
 
   src = fetchFromGitHub {
     owner = "vixalien";
     repo = "force-phone-mode";
-    rev = "a6dd652bf4471f191307ca2a41f0c3a6f58d3eed";
-    sha256 = "sha256-KihW0SD0VTm3Kg21eBj9jzFq7UmQcsHoA0BYuwp5svg=";
+    rev = "0963c1b5f6dbd83d9e209bb8a887e1b5ec851aac";
+    sha256 = "sha256-0oN2mRQ1olhjCWEdZyMEexqba/VH20zcwiP1ae0nbWw=";
   };
 
   passthru = {
