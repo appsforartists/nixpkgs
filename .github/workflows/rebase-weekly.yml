@@ -1,0 +1,84 @@
+name: Rebase onto Determinate's nixpkgs-weekly
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  rebase-weekly:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout appsforartists
+        uses: actions/checkout@v5
+        with:
+          ref: appsforartists
+          fetch-depth: 0 # checkout the whole history
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for updates
+        id: check
+        run: |
+          UPSTREAM_HEAD=$(curl -s https://api.flakehub.com/f/DeterminateSystems/nixpkgs-weekly/releases | jq -r '.[0].revision')
+          echo "nixpkgs-weekly's HEAD: $UPSTREAM_HEAD"
+          
+          if git merge-base --is-ancestor "$UPSTREAM_HEAD" HEAD 2>/dev/null; then
+             echo "Already based on the newest nixpkgs-weekly ($UPSTREAM_HEAD)"
+             echo "update_needed=false" >> $GITHUB_OUTPUT
+          else
+             echo "Rebasing atop $UPSTREAM_HEAD"
+             echo "update_needed=true" >> $GITHUB_OUTPUT
+             echo "head=$UPSTREAM_HEAD" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rebase branch
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/NixOS/nixpkgs.git
+          git fetch upstream ${{ steps.check.outputs.head }}
+
+          if git rebase ${{ steps.check.outputs.head }}; then
+            echo "Rebase completed without conflicts."
+          else
+            echo "Rebase failed with conflicts. Attempting to resolve automatically."
+
+            CONFLICTED_FILES=$(git diff --name-only --diff-filter=U)
+            OTHER_CONFLICTS_FOUND=false
+
+            for file in $CONFLICTED_FILES; do
+              if [[ ! "$file" == ".github/"* ]]; then
+                OTHER_CONFLICTS_FOUND=true
+                echo "::error::Conflict in '$file' cannot be auto-resolved."
+              fi
+            done
+
+            if [ "$OTHER_CONFLICTS_FOUND" = true ]; then
+              echo "Aborting rebase due to unresolvable conflicts."
+              git rebase --abort
+              exit 1
+            fi
+
+            echo "All conflicts are in .github/workflows. Skipping the conflicting commit."
+            git rebase --skip
+          fi
+
+      - name: Filter out unused GitHub Actions
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          set -euo pipefail
+          rm -rf .github && mkdir -p .github/workflows
+          git restore .github/workflows/rebase-weekly.yml
+          git add -u
+          if ! git diff --staged --quiet; then
+            git commit -m 'APPSFORARTISTS: remove unused GitHub Actions'
+          fi
+
+      - name: Update GitHub
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          git push origin appsforartists --force
